@@ -1,0 +1,43 @@
+
+extends ../partials/index.pug
+
+
+block vars
+  - var documentations = []
+  - documentations.push({ name: 'v2.0', status: 'latest stable', date: '0', bootstrapClass: 'success' })
+  - documentations.push({ name: 'master', status: 'unstable', date: '11.07.2018', bootstrapClass: 'warning' })
+  - var navActive = 1
+
+block head
+  // link(rel = 'stylesheet' href = 'css/template.css')
+  // script(src = 'js/template.js')
+
+block header
+    section.container
+        div.row
+          div.col
+            include:markdown-it(html plugins=['markdown-it-highlightjs']) docs.md
+
+block content
+
+  section.container
+    div.row
+      div.col 
+        h2.mb-4 Available Documentations
+
+        div.card-columns
+          each doc in documentations
+            div.card(class='border-' + doc.bootstrapClass)
+              div.card-body(class='text-' + doc.bootstrapClass)
+                div.card-title
+                  a.nav-link.active(href='/docs/' + doc.name)
+                    div.card-block.text-center
+                      div.pull-left
+                        span.h2= doc.name
+                      div.pull-right
+                        span.badge(class='badge-' + doc.bootstrapClass)= doc.status
+        
+  section.container
+    div.row
+      div.col
+        include:markdown-it(html plugins=['markdown-it-highlightjs']) integration-guide.md

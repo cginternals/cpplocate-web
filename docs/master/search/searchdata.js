@@ -2,7 +2,7 @@ var indexSectionsWithContent =
 {
   0: "cgl",
   1: "c",
-  2: "c",
+  2: "cl",
   3: "gl"
 };
 

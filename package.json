@@ -1,22 +1,26 @@
 {
-    "name": "glbinding-website",
+    "name": "cpplocate-website",
     "private": true,
     "version": "0.1.0",
-    "description": "Website for glbinding.org",
+    "description": "Website for cpplocate.org",
     "author": "CG Internals",
     "homepage": "https://cginternals.com",
     "bugs": {
         "email": "contact@cginternals.com",
-        "url": "https://gitlab.cginternals.com/web/template/issues"
+        "url": "https://gitlab.cginternals.com/web/cpplocate/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://gitlab.cginternals.com/web/template.git"
+        "url": "https://gitlab.cginternals.com/web/cpplocate.git"
     },
     "contributors": [
         {
             "name": "Daniel Limberger",
             "email": "daniel.limberger@cginternals.com"
+        },
+        {
+            "name": "Willy Scheibel",
+            "email": "willy.scheibel@cginternals.com"
         }
     ],
     "devDependencies": {

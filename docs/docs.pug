@@ -15,10 +15,11 @@ block head
   // script(src = 'js/template.js')
 
 block header
-    section.container
-        div.row
-          div.col
-            include:markdown-it(html plugins=['markdown-it-highlightjs']) docs.md
+  section.container
+    header.jumbatron
+      img(src = 'img/logo-cpplocate.svg' alt = 'cpplocate logo').mb-2.w-50.d-none.d-md-block
+      img(src = 'img/logo-cpplocate.svg' alt = 'cpplocate logo').mb-2.d-block.d-md-none
+      p.lead A C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.
 
 block content
 

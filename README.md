@@ -248,7 +248,8 @@ void locatePath(char ** path, unsigned int * pathLength, const char * relPath, u
     const char * systemDir, unsigned int systemDirLength, void * symbol);
 ```
 
-## Professional Support
+
+# Professional Support
 
 CG Internals offers computer graphics R&D as well as reliable technology and innovative concepts to support your computer graphics visions.
 We provide trainings and can help you integrate and customize *cpplocate* in your next project.

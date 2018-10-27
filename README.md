@@ -11,7 +11,8 @@ However, software should be able to locate its data assets as easy as possible a
 
 #include <glbinding/gl/gl.h>
 
-const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glbinding", reinterpret_cast<void *>(&gl::glCreateShader));
+const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glbinding", 
+    reinterpret_cast<void *>(&gl::glCreateShader));
 // assetPath now contains the path to the directory containing "data/cubescape"
 ```
 
@@ -203,7 +204,8 @@ Note that for Windows most projects deploy using local installs. Currently, we a
 
 #include <glbinding/gl/gl.h>
 
-const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glbinding", reinterpret_cast<void *>(&gl::glCreateShader));
+const std::string assetPath = cpplocate::locatePath("data/cubescape", "share/glbinding", 
+    reinterpret_cast<void *>(&gl::glCreateShader));
 // assetPath now contains the path to the directory containing "data/cubescape"
 ```
 
@@ -242,7 +244,8 @@ void getModulePath(char ** path, unsigned int * pathLength);
 void getLibraryPath(void * symbol, char ** path, unsigned int * pathLength);
 
 // Locate path to a file or directory
-void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength, const char * systemDir, unsigned int systemDirLength, void * symbol);
+void locatePath(char ** path, unsigned int * pathLength, const char * relPath, unsigned int relPathLength, 
+    const char * systemDir, unsigned int systemDirLength, void * symbol);
 ```
 
 ## Professional Support

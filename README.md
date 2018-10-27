@@ -149,7 +149,7 @@ target_link_libraries(${target} ... PUBLIC cpplocate::cpplocate)
 
 *cpplocate* supports queries of different paths, depending on the type of the component in question (application, library, or application bundle). For the most basic use case, *cpplocate* is used to detect run-time data that is associated with a module, and we provide a convenience location function.
 
-## Query Executable Path
+### Query Executable Path
 
 ```cpp
 #include <cpplocate/cpplocate.h>
@@ -158,7 +158,7 @@ const std::string executablePath = cpplocate::getExecutablePath();
 // executablePath now contains the path to the executable (including its filename)
 ```
 
-## Query Module Path
+### Query Module Path
 
 ```cpp
 #include <cpplocate/cpplocate.h>
@@ -167,7 +167,7 @@ const std::string modulePath = cpplocate::getModulePath();
 // modulePath now contains the path to the directory containing the executable
 ```
 
-## Query Bundle Path
+### Query Bundle Path
 
 Querying application bundles is only defined for macOS application bundles.
 For other platforms or non-bundle applications, empty strings are returned.
@@ -180,7 +180,7 @@ const std::string bundlePath = cpplocate::getBundlePath();
 // (instead of the path to the executable within the bundle)
 ```
 
-## Query Library Path
+### Query Library Path
 
 To query a library location, you have to specify a pointer to a symbol (e.g., a function pointer or a public static member) that is exposed by the library.
 
@@ -193,7 +193,7 @@ const std::string libraryPath = cpplocate::getLibraryPath(reinterpret_cast<void 
 // libraryPath now contains the path to the QtCore library (including its filename)
 ```
 
-## Query Runtime Asset Path
+### Query Runtime Asset Path
 
 This function searches for a subdirectory pattern across available system paths, local run paths of the executable or alongside a library that is identified via an exported symbol. This function searches for a relative directory as passed as the first parameter along the executable or a library (local install) and in a number of system install locations (system install). In case of a system install, the relative path of the second parameter is assumed to prepend the first parameter. A library for which a run-time directory should get located can be identified through an exposed symbol.
 

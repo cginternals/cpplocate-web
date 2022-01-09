@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>cpplocate</title><link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"><link rel="stylesheet" href="css/bootstrap-4.0.0.min.css"><link rel="stylesheet" href="css/fonts.css"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/highlightjs.min.css"><script src="js/jquery-3.2.1.slim.min.js"></script><script src="js/popper-1.12.9.min.js"></script><script src="js/bootstrap-4.0.0.min.js"></script><script src="js/rx-5.5.6.min.js"></script><script src="js/website.js"></script><script src="js/clipboard.min.js"></script><!-- link(rel = 'stylesheet' href = 'css/template.css')--><!-- script(src = 'js/template.js')--></head><body class="bg-light"><nav class="navbar navbar-expand-md navbar-dark bg-dark"><div class="container"><a class="nav-link px-0" href="https://cginternals.com"><span class="d-none d-md-block"><img class="img-fluid mt-0" src="img/cginternals.svg" alt="cginternals logo"></span><span class="d-block d-md-none"><img class="img-fluid mt-0" src="img/navicon.svg" alt="cginternals icon"></span></a><ul class="navbar-nav ml-auto" id="nav"><li class="nav-item active"><a class="nav-link" href="/">CPPLOCATE</a></li><li class="nav-item"><a class="nav-link" href="/docs.html">DOCUMENTATION</a></li><li class="nav-item"><a class="nav-link" href="https://github.com/cginternals/cpplocate">GITHUB</a></li></ul></div></nav><section class="container"><header class="jumbatron"><img class="mb-2 w-50 d-none d-md-block" src="img/cpplocate-logo.svg" alt="cpplocate logo"><img class="mb-2 d-block d-md-none" src="img/cpplocate-logo.svg" alt="cpplocte logo"><p class="lead">A C++ library that provides tools for applications to locate their binary files and data assets, as well as those of dependent modules.</p></header></section><section class="container"><div class="row"><div class="col"><p>In the context of cross-platform applications, locating data assets belonging to an application or library is not an easy task.
+Depending on the situation, data assets can occupy different locations on a system: in a development tree, data might be located relative to the executable in a build directory, when installed into the system, they might be located in a global directory such as <code>/usr/share</code> or <code>C:\Users\...\AppData</code>, while for self-contained installs they might be located relative to the executable again.
+When projects are deployed using installers or archives, the final location can be controlled by the user installing the software, therefore it cannot be known at build-time.
+The situation gets even more complicated when an application does not only need access to its own data assets, but depends on other modules, such as dynamic libraries or even plugins, which bring their own data.
+However, software should be able to locate its data assets as easy as possible and still be relocatable for typical deployment and installation routines to work as expected.</p>
+<p><em>cpplocate</em> provides interfaces to locate such data assets. Following, a short example on how <a href="https://github.com/cginternals/glbinding">glbinding</a> examples locate their run-time assets:</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cpplocate/cpplocate.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;glbinding/gl/gl.h&gt;</span></span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> assetPath = cpplocate::locatePath(<span class="hljs-string">"data/cubescape"</span>, <span class="hljs-string">"share/glbinding"</span>, 
+    <span class="hljs-keyword">reinterpret_cast</span>&lt;<span class="hljs-keyword">void</span> *&gt;(&amp;gl::glCreateShader));
+<span class="hljs-comment">// assetPath now contains the path to the directory containing "data/cubescape"</span>
+</code></pre>
+<h1>Resources</h1>
+<ul>
+<li><a href="#c-port-of-cpplocate-liblocate">C Port of <em>cpplocate</em>: liblocate</a></li>
+</ul>
+<h5>Installation and Development</h5>
+<ul>
+<li><a href="#install-instructions">Install Instructions</a></li>
+<li><a href="#build-instructions">Build form Source</a></li>
+<li><a href="#tips-for-linking">Tips for Linking</a></li>
+</ul>
+<h5>Feature Documentation and Code Snippets</h5>
+<ul>
+<li><a href="#query-executable-path">Query Executable Path</a></li>
+<li><a href="#query-library-path">Query Library Path</a></li>
+<li><a href="#query-bundle-path">Query Bundle Path</a></li>
+<li><a href="#query-module-path">Query Module Path</a></li>
+<li><a href="#query-runtime-asset-path">Query Runtime Asset Path</a></li>
+</ul>
+<h1>Install Instructions</h1>
+<p><em>cpplocate</em> is available for different platforms using different distribution channels.
+You can either download the source and manually <a href="#build-instructions">compile</a> it or use one of the <a href="https://github.com/cginternals/cpplocate/releases">pre-compiled releases</a> of this repository.
+For systems providing package managers, we generally strive to provide packages.</p>
+<h5>Windows</h5>
+<p>There is currently no precompiled package maintained. Please download the source code and commence <a href="#build-instructions">building from source</a>.</p>
+<h5>Ubuntu</h5>
+<p><em>cpplocate</em> is provided on Ubuntu using PPAs.
+For Ubuntu 15.04 (vivid) and more recent versions use the <a href="https://launchpad.net/~cginternals/+archive/ubuntu/ppa">current PPA</a>, for Ubuntu 14.04 (trusty) use the <a href="https://launchpad.net/~cginternals/+archive/ubuntu/backports-ppa">backports PPA</a>.
+Using the current PPA as example, the following lines install <em>cpplocate</em>:</p>
+<pre><code class="hljs language-shell"><span class="hljs-meta">&gt;</span><span class="bash"> sudo apt-add-repository ppa:cginternals/ppa</span>
+<span class="hljs-meta">&gt;</span><span class="bash"> sudo apt-get update</span>
+<span class="hljs-meta">&gt;</span><span class="bash"> sudo apt-get install libcpplocate</span>
+</code></pre>
+<p>To use <em>cpplocate</em> as dependency, install the development package:</p>
+<pre><code class="hljs language-shell"><span class="hljs-meta">&gt;</span><span class="bash"> sudo apt-get install libcpplocate-dev libcpplocate-dbg</span>
+</code></pre>
+<p>Alternatively, download the source code and commence <a href="#build-instructions">building from source</a>.</p>
+<h5>OS X</h5>
+<p>There is currently no precompiled package maintained. Please download the source code and commence <a href="#build-instructions">building from source</a>.</p>
+<h5>Debian-based Systems</h5>
+<p>There is currently no precompiled package maintained. Please download the source code and commence <a href="#build-instructions">building from source</a>.</p>
+<h1>Build Instructions</h1>
+<h5>Prerequisites and Dependencies</h5>
+<p>The only mandatory run-time dependencies of <em>cpplocate</em> are the STL of the used compiler.
+Building <em>cpplocate</em> utilizes:</p>
+<ul>
+<li><a href="https://cmake.org/">CMake</a> 3.0 or higher for building <em>cpplocate</em> from source (mandatory for any build from source)</li>
+<li><a href="https://git-scm.com/">git</a> for version control (optional)</li>
+<li><a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> 1.8 or higher for generating the documentation on your system (optional)
+<ul>
+<li><a href="http://www.graphviz.org/">graphviz</a> for generating diagrams (optional)</li>
+</ul>
+</li>
+</ul>
+<h5>Compile Instructions</h5>
+<p>For compilation, a C++11 compliant compiler, e.g., GCC 4.8, Clang 3.3, MSVC 2013 <strong>Update 3</strong>, is required.</p>
+<p>First, download the source code <a href="https://github.com/cginternals/cpplocate/releases">as archive</a> or via git:</p>
+<pre><code class="hljs language-bash">&gt; git <span class="hljs-built_in">clone</span> https://github.com/cginternals/cpplocate.git
+&gt; <span class="hljs-built_in">cd</span> cpplocate
+</code></pre>
+<p>Then, depending on the version of <em>cpplocate</em> you want to build, choose the appropriate tag or branch, e.g., for the 1.0.0 release:</p>
+<pre><code class="hljs language-bash">&gt; git fetch --tags
+&gt; git checkout v1.0.0
+</code></pre>
+<p>The actual compilation can be done using CMake and your favorite compiler and IDE.</p>
+<p>For building <em>cpplocate</em> CMake via command line can be used (should work on all systems):</p>
+<p>First create a build directory (we do not recommend in-source builds):</p>
+<pre><code class="hljs language-bash">&gt; mkdir build
+&gt; <span class="hljs-built_in">cd</span> build
+</code></pre>
+<p>Configure <em>cpplocate</em> with your prefered or default generator, e.g., for Visual Studio 2017 in x64 use
+(note: some IDEs have integrated support for CMake projects, e.g., Qt Creator, and allow you to skip the manual project configuration):</p>
+<pre><code class="hljs language-bash">&gt; cmake .. -G <span class="hljs-string">"Visual Studio 15 2017 Win64"</span>
+</code></pre>
+<p>In order to compile the project, either use you favorite Editor/IDE with the created project or use CMake as follows:</p>
+<pre><code class="hljs language-bash">&gt; cmake --build .
+</code></pre>
+<h1>Tips for Linking</h1>
+<p>For a smooth integration we suggest using <a href="https://cmake.org/">CMake</a>, the build system employed by <em>cpplocate</em>.
+In this case, <em>cpplocate</em> provides a find configuration script that should be either installed into your system or at least accessible by CMake.
+In your project's CMakeLists.txt, add one of the following lines:</p>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">find_package</span>(cpplocate QUIET) <span class="hljs-comment"># if you want to check for existence</span>
+<span class="hljs-keyword">find_package</span>(cpplocate REQUIRED) <span class="hljs-comment"># if it is really required in your project</span>
+</code></pre>
+<p>Finally, just link <em>cpplocate</em> to your own library or executable:</p>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">target_link_libraries</span>(<span class="hljs-variable">${target}</span> ... PUBLIC cpplocate::cpplocate)
+</code></pre>
+<h1>Examples and Documentation</h1>
+<p><em>cpplocate</em> supports queries of different paths, depending on the type of the component in question (application, library, or application bundle). For the most basic use case, <em>cpplocate</em> is used to detect run-time data that is associated with a module, and we provide a convenience location function.</p>
+<h3>Query Executable Path</h3>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cpplocate/cpplocate.h&gt;</span></span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> executablePath = cpplocate::getExecutablePath();
+<span class="hljs-comment">// executablePath now contains the path to the executable (including its filename)</span>
+</code></pre>
+<h3>Query Module Path</h3>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cpplocate/cpplocate.h&gt;</span></span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> modulePath = cpplocate::getModulePath();
+<span class="hljs-comment">// modulePath now contains the path to the directory containing the executable</span>
+</code></pre>
+<h3>Query Bundle Path</h3>
+<p>Querying application bundles is only defined for macOS application bundles.
+For other platforms or non-bundle applications, empty strings are returned.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cpplocate/cpplocate.h&gt;</span></span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> bundlePath = cpplocate::getBundlePath();
+<span class="hljs-comment">// bundlePath now contains the path to the root of the application bundle</span>
+<span class="hljs-comment">// (instead of the path to the executable within the bundle)</span>
+</code></pre>
+<h3>Query Library Path</h3>
+<p>To query a library location, you have to specify a pointer to a symbol (e.g., a function pointer or a public static member) that is exposed by the library.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cpplocate/cpplocate.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;QtGlobal&gt;</span></span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> libraryPath = cpplocate::getLibraryPath(<span class="hljs-keyword">reinterpret_cast</span>&lt;<span class="hljs-keyword">void</span> *&gt;(&amp;qVersion));
+<span class="hljs-comment">// libraryPath now contains the path to the QtCore library (including its filename)</span>
+</code></pre>
+<h3>Query Runtime Asset Path</h3>
+<p>This function searches for a subdirectory pattern across available system paths, local run paths of the executable or alongside a library that is identified via an exported symbol. This function searches for a relative directory as passed as the first parameter along the executable or a library (local install) and in a number of system install locations (system install). In case of a system install, the relative path of the second parameter is assumed to prepend the first parameter. A library for which a run-time directory should get located can be identified through an exposed symbol.</p>
+<p>Note that for Windows most projects deploy using local installs. Currently, we assume local installs for Windows.</p>
+<pre><code class="hljs language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cpplocate/cpplocate.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;glbinding/gl/gl.h&gt;</span></span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> assetPath = cpplocate::locatePath(<span class="hljs-string">"data/cubescape"</span>, <span class="hljs-string">"share/glbinding"</span>, 
+    <span class="hljs-keyword">reinterpret_cast</span>&lt;<span class="hljs-keyword">void</span> *&gt;(&amp;gl::glCreateShader));
+<span class="hljs-comment">// assetPath now contains the path to the directory containing "data/cubescape"</span>
+</code></pre>
+<h1>C Port of cpplocate: liblocate</h1>
+<p>Internally, <em>cpplocate</em> is implemented using plain C, providing a C++ interface for ease of use. For communities and software that don't want to use C++, the <code>liblocate</code> within this project can be used instead.</p>
+<p>The adapted CMake integration is:</p>
+<pre><code class="hljs language-cmake"><span class="hljs-keyword">find_package</span>(liblocate QUIET) <span class="hljs-comment"># if you want to check for existence</span>
+<span class="hljs-keyword">find_package</span>(liblocate REQUIRED) <span class="hljs-comment"># if it is really required in your project</span>
+
+<span class="hljs-comment"># declare target</span>
+
+<span class="hljs-keyword">target_link_libraries</span>(<span class="hljs-variable">${target}</span> ... PUBLIC cpplocate::liblocate)
+</code></pre>
+<p>The interfaces are as follows:</p>
+<pre><code class="hljs language-cpp">
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;liblocate/liblocate.h&gt;</span></span>
+
+<span class="hljs-comment">// Get path to the current executable</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getExecutablePath</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ** path, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> * pathLength)</span></span>;
+
+<span class="hljs-comment">// Get path to the current application bundle</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getBundlePath</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ** path, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> * pathLength)</span></span>;
+
+<span class="hljs-comment">// Get path to the current module</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getModulePath</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ** path, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> * pathLength)</span></span>;
+
+<span class="hljs-comment">// Get path to dynamic library</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getLibraryPath</span><span class="hljs-params">(<span class="hljs-keyword">void</span> * symbol, <span class="hljs-keyword">char</span> ** path, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> * pathLength)</span></span>;
+
+<span class="hljs-comment">// Locate path to a file or directory</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">locatePath</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ** path, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> * pathLength, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> * relPath, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> relPathLength, 
+    <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> * systemDir, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> systemDirLength, <span class="hljs-keyword">void</span> * symbol)</span></span>;
+</code></pre>
+</div></div></section><section class="container"><div class="row"><div class="col"><h1>Professional Support</h1>
+<p>CG Internals offers computer graphics R&amp;D as well as reliable technology and innovative concepts to support your computer graphics visions.
+We provide trainings and can help you integrate and customize <em>cpplocate</em> in your next project.</p>
+<p>Visit <a href="https://www.cginternals.com">Professional Support and Services</a> for more details.</p>
+</div></div></section><footer class="text-center" id="footer">Copyright &copy; 2015&thinsp;&ndash;&thinsp;2018  <a href="https://cginternals.com">CG Internals</a><br><small>This type of website is critically endangered: static, self-hosted, single-origin, as well as tracking and cookie-free. <a href="https://cginternals.com/en/privacy-policy.html">Privacy Policy</a></small></footer></body></html>
